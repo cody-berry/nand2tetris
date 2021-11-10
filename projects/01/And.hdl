@@ -14,5 +14,5 @@ CHIP And {
     OUT out;
 
     PARTS:
-    // Put your code here: with lots of bees! but NOT hornets
+    // Put your code here: with lots of bees!
 }
