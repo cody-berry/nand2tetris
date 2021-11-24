@@ -2,6 +2,7 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/DMux8Way.hdl
+// Hi! It's Cody who's coding. If you don't see this comment here, it's not my DMux8Way.. 
 
 /**
  * 8-way demultiplexor:
@@ -17,4 +18,7 @@ CHIP DMux8Way {
 
     PARTS:
     // Put your code here:
+    DMux(in=in, sel=sel[2], a=inseladmux, b=inselbdmux);
+    DMux4Way(in=inseladmux, sel=sel[0..1], a=a, b=b, c=c, d=d);
+    DMux4Way(in=inselbdmux, sel=sel[0..1], a=e, b=f, c=g, d=h);
 }
