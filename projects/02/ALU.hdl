@@ -44,15 +44,35 @@ CHIP ALU {
 
     PARTS:
     // Put you code here: 
+    // below zeros x
     Mux16(a=x, b[0..15]=false, sel=zx, out=xfalsezxmux);
+
+    // below negates x
     Not16(in=xfalsezxmux, out=notxfalsezxmux);
     Mux16(a=xfalsezxmux, b=notxfalsezxmux, sel=nx, out=znx);
+
+    // repeat for y!
+    // below zeros y
     Mux16(a=y, b[0..15]=false, sel=zy, out=yfalsezymux);
+
+    // below negates y
     Not16(in=yfalsezymux, out=notyfalsezymux);
     Mux16(a=yfalsezymux, b=notyfalsezymux, sel=ny, out=zny);
+
+    // below deals with the f input
     And16(a=znx, b=zny, out=znxandzny);
     Add16(a=znx, b=zny, out=znxpluszny);
     Mux16(a=znxandzny, b=znxpluszny, sel=f, out=znxandplusmuxzny);
+
+    // below negates the output
     Not16(in=znxandplusmuxzny, out=notznxandplusmuxzny);
-    Mux16(a=znxandplusmuxzny, b=notznxandplusmuxzny, sel=no, out=out);
+
+    // to confirm that output is a negative number, the most significant bit has to be on (in 2's compliment).
+    Mux16(a=znxandplusmuxzny, b=notznxandplusmuxzny, sel=no, out=out, out[15]=ng, out[0..7]=lsb, out[8..15]=msb);
+
+    // what about zr? it's on if all of the outputs are off
+    Or8Way(in=lsb, out=zr0to7);
+    Or8Way(in=msb, out=zr8to15);
+    Or(a=zr0to7, b=zr8to15, out=notzr); 
+    Not(in=notzr, out=zr);
 }
