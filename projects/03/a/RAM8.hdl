@@ -20,5 +20,15 @@ CHIP RAM8 {
         first, we should store the load bit with a DMux with the input being our load bit and the selector being our address
         then, we should have our registors with our load bits and our in[16]. We mux those outputs together with selectors of our address again and that's it! We got our output!
     */ 
-    DMux(in=load, sel=address, a=);
+    DMux8Way(in=load, sel=address, a=register1load, b=register2load, c=register3load, d=register4load, e=register5load, f=register6load, g=register7load, h=register8load);
+    Register(in=in[16], load=register1load, out=muxInput1);
+    Register(in=in[16], load=register2load, out=muxInput2);
+    Register(in=in[16], load=register3load, out=muxInput3);
+    Register(in=in[16], load=register4load, out=muxInput4);
+    Register(in=in[16], load=register5load, out=muxInput5);
+    Register(in=in[16], load=register6load, out=muxInput6);
+    Register(in=in[16], load=register7load, out=muxInput7);
+    Register(in=in[16], load=register8load, out=muxInput8);
+    Mux8Way(a=muxinput1, b=muxinput2, c=muxinput3, d=muxinput4, e=muxinput5, f=muxinput6, g=muxinput7, h=muxinput8, sel=address, out=out);
+
 }
