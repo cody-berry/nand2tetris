@@ -15,5 +15,10 @@ CHIP RAM8 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+
+    /* 
+        first, we should store the load bit with a DMux with the input being our load bit and the selector being our address
+        then, we should have our registors with our load bits and our in[16]. We mux those outputs together with selectors of our address again and that's it! We got our output!
+    */ 
+    DMux(in=load, sel=address, a=);
 }
