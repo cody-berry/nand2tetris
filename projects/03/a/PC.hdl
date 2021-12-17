@@ -18,14 +18,18 @@ CHIP PC {
     PARTS:
     // Put your code here:
     // find our selector for our Mux4Way16
-    Xor(a=load, b=inc, out=needsToBeInverted);
-    Not(in=needsToBeInverted, out=selAt0);
-    Xor(a=selAt0, b=reset, out=needsToBeInverted2);
-    Not(in=needsToBeInverted2, out=selAt1);
-    Inc16(in=outDuplicate, out=Mux2)
-
-    Mux4Way16(a=in, b=Mux2, c=false, d=outDuplicate, sel[0]=selAt0, sel[1]=selAt1, out=registerIn);
+    // whoops, lets swap the load and reset bits for this
+    Or(a=load, b=reset, out=selAt1);
     Or(a=load, b=inc, out=loadOrInc);
-    Or(a=loadOrInc, b=reset, out=load);
-    Register(in=registerIn, load=load, out=out, out[0..15]=outDuplicate);
+    Not(in=reset, out=notReset);
+    And(a=loadOrInc, b=notReset, out=selAt0);
+    Inc16(in=outDuplicate, out=Mux2);
+
+    // now we can do our mux4way16!
+    // if load is on, we want to send the input. If the incrementor is on but the load isn't on, we want 1 more than the previous output. If our reset is on but nothing else is on, we want all of our bits to be 0. Otherwise, when none of the inputs are on, we can throw a random thing becuase it's not going to affect the register.
+    Mux4Way16(a=false, b=Mux2, c=false, d=in, sel[0]=selAt0, sel[1]=selAt1, out=registerIn);
+
+    // let's find the load bit for our register
+    Or(a=loadOrInc, b=reset, out=registerLoad);
+    Register(in=registerIn, load=registerLoad, out=out, out[0..15]=outDuplicate);
 }
