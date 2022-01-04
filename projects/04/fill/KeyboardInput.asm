@@ -15,7 +15,28 @@ M=0       // Set RAM[SCREEN] to 0
 0;JMP     // goto LOOP
 (ON)
 @SCREEN
-M=-1      // Set RAM[SCREEN] to -1
+D=A
+@add
+M=D           // add = SCREEN
+@KBD
+D=A
+@n
+M=D           // n = KBD
+(LOOP2)
+@add
+D=M
+@n
+D=D-M
+@LOOP
+D;JGE         // if (add >= n), goto LOOP
+
+@add
+A=M
+M=-1          // RAM[add]=-1
+@add
+M=M+1         // add += 1
+@LOOP2
+0;JMP         // goto LOOP2
 @LOOP
 0;JMP     // goto LOOP
 
