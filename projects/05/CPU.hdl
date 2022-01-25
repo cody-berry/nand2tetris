@@ -40,4 +40,40 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    // A register input
+    Mux16(a=instruction, b=ALUoutput, sel=instruction[15], out=instructionAlUoutputopcodemux16);
+
+    // A register load
+    Not(in=instruction[5], out=notinsat5);
+    Nand(a=notinsat5, b=instruction[15], out=Aload);
+
+    // Actual A register
+    Register(in=instructionAlUoutputopcodemux16, load = Aload, out[0..14]=addressM, out[0..15]=Aout);
+
+    // D register load
+    And(a=instruction[4], b=instruction[15], out=Dload);
+
+    // Actual D register
+    Register(in=ALUoutput, load=Dload, out=Dout);
+
+    // A/M ALU input
+    Mux16(a=inM, b=Aout, sel=instruction[12], out=inMAoutinsat12mux16);
+
+    // Actual ALU
+    ALU(x=Dout, y=inMAoutinsat12mux16, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out[0..15]=ALUoutput, out=outM, zr=zr, ng=ng);
+
+    // PC load
+    And(a=zr, b=instruction[1], out=zrandinsat1);
+    And(a=ng, b=instruction[2], out=ngandinsat2);
+    Or(a=zrandinsat1, b=ngandinsat2, out=negativeorzero);
+    Or(a=ng, b=zr, out=ngorzr);
+    Not(in=ngorzr, out=ngnorzr);
+    And(a=ngnorzr, b=instruction[0], out=positive);
+    Or(a=negativeorzero, b=positive, out=PCload);
+
+    // Actual PC
+    PC(in=Aout, reset=reset, inc=true, load=PCload, out[0..14]=pc);
+
+    // writeM
+    And(a=instruction[3], b=instruction[15], out=writeM);
 }
