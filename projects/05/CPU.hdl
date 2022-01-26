@@ -57,7 +57,7 @@ CHIP CPU {
     Register(in=ALUoutput, load=Dload, out=Dout);
 
     // A/M ALU input
-    Mux16(a=inM, b=Aout, sel=instruction[12], out=inMAoutinsat12mux16);
+    Mux16(a=Aout, b=inM, sel=instruction[12], out=inMAoutinsat12mux16);
 
     // Actual ALU
     ALU(x=Dout, y=inMAoutinsat12mux16, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out[0..15]=ALUoutput, out=outM, zr=zr, ng=ng);
