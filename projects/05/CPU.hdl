@@ -69,10 +69,11 @@ CHIP CPU {
     Or(a=ng, b=zr, out=ngorzr);
     Not(in=ngorzr, out=ngnorzr);
     And(a=ngnorzr, b=instruction[0], out=positive);
-    Or(a=negativeorzero, b=positive, out=PCload);
+    Or(a=negativeorzero, b=positive, out=PCloadForCinstruction);
+    And(a=PCloadForCinstruction, b=instruction[15], out=PCload);
 
     // Actual PC
-    PC(in=Aout, reset=reset, inc=true, load=PCload, out[0..14]=pc);
+    PC(in=Aout, load=PCload, inc=true, reset=reset, out[0..14]=pc);
 
     // writeM
     And(a=instruction[3], b=instruction[15], out=writeM);
