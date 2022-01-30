@@ -48,19 +48,19 @@ CHIP CPU {
     Nand(a=notinsat5, b=instruction[15], out=Aload);
 
     // Actual A register
-    Register(in=instructionAlUoutputopcodemux16, load = Aload, out[0..14]=addressM, out[0..15]=Aout);
+    ARegister(in=instructionAlUoutputopcodemux16, load = Aload, out[0..14]=addressM, out[0..15]=Aout);
 
     // D register load
     And(a=instruction[4], b=instruction[15], out=Dload);
 
     // Actual D register
-    Register(in=ALUoutput, load=Dload, out=Dout);
+    DRegister(in=ALUoutput, load=Dload, out=DRegister);
 
     // A/M ALU input
     Mux16(a=Aout, b=inM, sel=instruction[12], out=inMAoutinsat12mux16);
 
     // Actual ALU
-    ALU(x=Dout, y=inMAoutinsat12mux16, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out[0..15]=ALUoutput, out=outM, zr=zr, ng=ng);
+    ALU(x=DRegister, y=inMAoutinsat12mux16, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out[0..15]=ALUoutput, out=outM, zr=zr, ng=ng);
 
     // PC load
     And(a=zr, b=instruction[1], out=zrandinsat1);
