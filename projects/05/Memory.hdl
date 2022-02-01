@@ -44,22 +44,22 @@ CHIP Memory {
     Screen(in=in, load=ScreenLoad, address=address[0..12], out=ScreenOut);
 
     // Keyboard load
-    Or8Way(in[0]=notAddressAt13, in[1]=RAM16KCondition, in[2..7] = address[8..12], out=KeyboardPart1);
-    Or8Way(in=address[0..7], out=KeyboardPart2);
+    Or8Way(in[0]=notAddressAt13, in[1]=RAM16KCondition, in[2..7] = address[7..12], out=KeyboardPart1);
+    Or8Way(in[0..6]=address[0..6], in[7]=false, out=KeyboardPart2);
     Or(a=KeyboardPart1, b=KeyboardPart2, out=KeyboardPart4);
     Not(in=KeyboardPart4, out=KeyboardCondition);
     And(a=KeyboardCondition, b=load, out=KeyboardLoad);
 
     // Keyboard
-    Keyboard(in=in, load=KeyboardLoad, out=KeyboardOut);
+    Keyboard(out=KeyboardOut);
 
     // Mux selector
     Or(a=RAM16KCondition, b=ScreenCondition, out=MuxSelPart1);
     Or(a=MuxSelPart1, b=KeyboardCondition, out=MuxSelPart2);
     Not(in=MuxSelPart2, out=MuxSelPart3);
     Or(a=MuxSelPart3, b=ScreenCondition, out=MuxSelPart4);
-    Not(in=RAM16KOut, out=MuxSelPart5);
+    And(a=address[14], b=address[13], out=MuxSelPart5);
 
     // Mux4Way16
-    Mux4Way16(a=RAM16KOut, b=ScreenOut, c=KeyboardOut, d=false, sel[0]=MuxSelPart5, sel[1]=MuxSelPart4, out=out);
+    Mux4Way16(a=RAM16KOut, b=ScreenOut, c=KeyboardOut, d=false, sel[0]=MuxSelPart4, sel[1]=MuxSelPart5, out=out);
 }
