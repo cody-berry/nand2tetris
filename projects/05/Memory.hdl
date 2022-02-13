@@ -44,10 +44,16 @@ CHIP Memory {
     Screen(in=in, load=ScreenLoad, address=address[0..12], out=ScreenOut);
 
     // Keyboard load
-    Or8Way(in[0]=notAddressAt13, in[1]=RAM16KCondition, in[2..7] = address[7..12], out=KeyboardPart1);
-    Or8Way(in[0..6]=address[0..6], in[7]=false, out=KeyboardPart2);
-    Or(a=KeyboardPart1, b=KeyboardPart2, out=KeyboardPart4);
-    Not(in=KeyboardPart4, out=KeyboardCondition);
+
+    // this is a deprecated method because it turns out that it doesn't have to be exactly 24576. As long as the code is correct, it should output 24576 for the keyboard.
+    // Or8Way(in[0]=notAddressAt13, in[1]=RAM16KCondition, in[2..7] = address[7..12], // out=KeyboardPart1);
+    // Or8Way(in[0..6]=address[0..6], in[7]=false, out=KeyboardPart2);
+    // Or(a=KeyboardPart1, b=KeyboardPart2, out=KeyboardPart4);
+    // Not(in=KeyboardPart4, out=KeyboardCondition);
+    // And(a=KeyboardCondition, b=load, out=KeyboardLoad);
+
+    // the keyboard load should be on if the load is on and address[14 & 13] is on.
+    And(a=address[14], b=address[13], out=KeyboardCondition);
     And(a=KeyboardCondition, b=load, out=KeyboardLoad);
 
     // Keyboard
